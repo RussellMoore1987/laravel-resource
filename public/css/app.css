@@ -1,0 +1,16 @@
+.purple-box {
+    padding: 10px;
+    border: 1px solid purple;
+}
+.red-box {
+    padding: 10px;
+    border: 1px solid red;
+}
+.green-box {
+    padding: 10px;
+    border: 1px solid green;
+}
+
+body {
+    color: salmon;
+}
