@@ -1,8 +1,11 @@
 // @ to build this project
     // composer create-project laravel/laravel="8.4.*" laravel_test
 
-// @ start up application
+const { bindAll } = require("lodash");
+
+// @ start up application (run/serve)
     // php artisan serve
+    // http://localhost:8000/
 
 // @ list of routes
     // php artisan route:list
@@ -13,6 +16,8 @@
     // php artisan make:controller PostsController
     // php artisan make:model Post
     // php artisan make:migration create_posts_table
+
+    // php artisan tinker
 
 // @ run migration
     // php artisan migrate
@@ -29,3 +34,138 @@
         // migrate:reset        Rollback all database migrations
         // migrate:rollback     Rollback the last database migration
         // migrate:status       Show the status of each migration
+
+    // * migration info 
+        // ? https://laravel.com/docs/8.x/migrations#column-method-string
+
+// @ make factory
+    // php artisan make:factory PostFactory --model=Post
+    // php artisan make:factory ProjectFactory --model=Project
+
+    // faker
+    // ? https://github.com/fzaninotto/Faker
+
+// @ db seed
+    // php artisan db:seed
+    // php artisan migrate:refresh --seed // rebuilds tables and seeds them
+
+// @ make controller
+    // php artisan make:controller PostsController
+
+    // make resource controller
+        // php artisan make:controller projectsController --resource
+
+// @ make many things
+    // php artisan help make:model
+    // Description:
+    //   Create a new Eloquent model class
+
+    // Usage:
+    //   make:model [options] [--] <name>
+
+    // Arguments:
+    //   name                  The name of the class
+
+    // Options:
+    //   -a, --all             Generate a migration, seeder, factory, and resource controller for the model
+    //   -c, --controller      Create a new controller for the model
+    //   -f, --factory         Create a new factory for the model
+    //       --force           Create the class even if the model already exists
+    //   -m, --migration       Create a new migration file for the model
+    //   -s, --seed            Create a new seeder file for the model
+    //   -p, --pivot           Indicates if the generated model should be a custom intermediate table model
+    //   -r, --resource        Indicates if the generated controller should be a resource controller
+    //       --api             Indicates if the generated controller should be an API controller
+    //   -h, --help            Display help for the given command. When no command is given display help for the list command
+    //   -q, --quiet           Do not output any message
+    //   -V, --version         Display this application version
+    //       --ansi|--no-ansi  Force (or disable --no-ansi) ANSI output
+    //   -n, --no-interaction  Do not ask any interactive question
+    //       --env[=ENV]       The environment the command should run under
+    //   -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+
+
+// @ Tinker commandline
+    // Psy Shell v0.10.8 (PHP 7.3.21 — cli) by Justin Hileman     
+    // >>> $Project = new App\Models\Project();
+    // => App\Models\Project {#4369}
+    // >>> $Project
+    // => App\Models\Project {#4369}
+    // >>> $Project->title = 'Gogo!!!';
+    // => "Gogo!!!"
+    // >>> $Project->description = 'Hi there, I got a description.';
+    // => "Hi there, I got a description."
+    // >>> $Project->save();
+    // => true
+
+// @ retrieving models
+    // App\Models\Project::find(51);
+        // php artisan tinker 
+            // >>> App\Models\Project::find(51);
+            // => App\Models\Project {#4376
+            //     id: 51,
+            //     title: "Gogo!!!",
+            //     description: "Hi there, I got a description.",
+            //     created_at: "2021-06-23 22:39:32",
+            //     updated_at: "2021-06-23 22:39:32",
+            // }
+            // >>> App\Models\Project::find(52);
+            // * => null
+
+        // App\Models\Project::find(51); // by id
+        // App\Models\Project::find([33,44,45,51]); // by ids
+        // App\Models\Project::findOrFail(52); // by id or fail
+        // $Project = Project::where('completed_at', null)->firstOrFail();
+        // App\Models\Project::all();
+        // App\Models\Project::first();
+        // App\Models\Project::where('completed_at', null)->get();
+        // $Project = App\Models\Project::where('completed_at', null)->first();
+        // $Project = App\Models\Project::firstWhere('completed_at', null);
+        
+        // $from = date('2018-01-01');
+        // $to = date('2019-05-02');
+        // App\Models\Project::whereBetween('completed_at', [$from, $to])->get();
+        // App\Models\Project::whereBetween('completed_at', ['2018-01-01', '2019-05-02'])->get();
+
+        // $Projects = App\Models\Project::where('completed_at', null)
+        //     ->orderBy('title')
+        //     ->take(10)
+        //     ->get();
+        // $Projects = App\Models\Project::where('completed_at', null)->orderBy('title')->take(3)->get();
+        // $Projects = App\Models\Project::where('completed_at', null)->orderByDesc('title')->limit(3)->get();
+
+        // TODO: try later format into existing architecture
+            // ? https://laravel.com/docs/8.x/eloquent#advanced-subqueries
+            // use App\Models\Destination;
+            // use App\Models\Flight;
+
+            // Destination::addSelect(['last_flight' => Flight::select('name')
+            //     ->whereColumn('destination_id', 'destinations.id')
+            //     ->orderByDesc('arrived_at')
+            //     ->limit(1)
+            // ])->get();
+
+            // Destination::orderByDesc(
+            //     Flight::select('arrived_at')
+            //         ->whereColumn('destination_id', 'destinations.id')
+            //         ->orderByDesc('arrived_at')
+            //         ->limit(1)
+            // )->get();
+
+
+
+// @ retrieving models from collections
+    // $Projects = Project::all();
+        // $Projects[0];
+        // $Projects->first();
+        // $Projects->count();
+        // ? https://laravel.com/docs/8.x/eloquent-collections#available-methods
+
+        // reject
+            // $Projects = App\Models\Project::all();
+            // $Projects->count(); // 50
+            // $Projects = $Projects->reject(function ($Project) {
+            //     return $Project->completed_at;
+            // });
+            // $Projects->count(); // 23
+            // gives back completed_at = null
