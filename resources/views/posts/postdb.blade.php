@@ -14,5 +14,5 @@
     <br>
     <br>
     <br>
-    <a href="{{ route('post.postsdb') . '#' . $post->slug }}">---Back to postsdb---</a>
+    <a href="{{ route('post.posts') . '#' . $post->slug }}">---Back to postsdb---</a>
 @endsection

@@ -79,16 +79,16 @@ use Illuminate\Support\Facades\Route;
     //     return view('welcome');
     // })->name('home.index'); // http://127.0.0.1:8000/
     // or
-    Route::view('/', 'welcome')->name('home.index'); // http://127.0.0.1:8000/
+    // Route::view('/', 'welcome')->name('home.index'); // http://127.0.0.1:8000/
 
-    // view nested in a folder
-    Route::get('/dashboard', function () {
-        return view('home.dashboard', );
-    })->name('home.dashBoard'); // http://127.0.0.1:8000/dashboard
+    // // view nested in a folder
+    // Route::get('/dashboard', function () {
+    //     return view('home.dashboard', );
+    // })->name('home.dashBoard'); // http://127.0.0.1:8000/dashboard
 
-    Route::get('/greenbox', function () {
-        return view('tests.greenbox');
-    })->name('home.greenbox'); // http://127.0.0.1:8000/greenbox
+    // Route::get('/greenbox', function () {
+    //     return view('tests.greenbox');
+    // })->name('home.greenbox'); // http://127.0.0.1:8000/greenbox
 
     // Route::get('/posts', function () {
     //     $posts = [
@@ -105,34 +105,37 @@ use Illuminate\Support\Facades\Route;
     //     return view('posts.posts', ['posts' => $posts]);
     // })->name('post.posts'); // http://127.0.0.1:8000/posts
 
-    $posts = [
-        1 => [
-            'title' => 'Intro to Laravel',
-            'content' => 'This is a short intro to Laravel'
-        ],
-        2 => [
-            'title' => 'Intro to PHP',
-            'content' => 'This is a short intro to PHP'
-        ]
-    ]; // to use in closure = use($posts)
+    // $posts = [
+    //     1 => [
+    //         'title' => 'Intro to Laravel',
+    //         'content' => 'This is a short intro to Laravel'
+    //     ],
+    //     2 => [
+    //         'title' => 'Intro to PHP',
+    //         'content' => 'This is a short intro to PHP'
+    //     ]
+    // ]; // to use in closure = use($posts)
 
-    Route::get('/posts', function () use($posts) {
-        return view('posts.posts', ['posts' => $posts]);
-    })->name('post.posts'); // http://127.0.0.1:8000/posts
+    // Route::get('/posts', function () use($posts) {
+    //     return view('posts.posts', ['posts' => $posts]);
+    // })->name('post.posts'); // http://127.0.0.1:8000/posts
 
-    // * wildcard
-    Route::get('/post/{id}', function ($id) use($posts) {
+    // // * wildcard
+    // Route::get('/post/{id}', function ($id) use($posts) {
 
-        abort_if(!isset($posts[$id]), 404);
+    //     abort_if(!isset($posts[$id]), 404);
 
-        return  view('posts.post', ['post' => $posts[$id], 'id' => $id]);
-    })->name('post.post'); // http://127.0.0.1:8000/post/1
+    //     return  view('posts.post', ['post' => $posts[$id], 'id' => $id]);
+    // })->name('post.post'); // http://127.0.0.1:8000/post/1
 
 // # with views & controller
-    Route::get('/postdb/{slug}', [PostsController::class, 'show'])->name('post.postdb'); // http://127.0.0.1:8000/postdb/my-first-post
-    
-    Route::get('/postsdb', [PostsController::class, 'index'])->name('post.postsdb'); // http://127.0.0.1:8000/postsdb
-    Route::get('/postsdb', [PostsController::class, 'index'])->name('post.postsdb'); // http://127.0.0.1:8000/postsdb
+    Route::get('/posts', [PostsController::class, 'index'])->name('post.posts'); // http://127.0.0.1:8000/posts
+
+    Route::get('/posts/create', [PostsController::class, 'create'])->name('post.create'); // http://127.0.0.1:8000/posts/create
+    Route::post('/posts/store', [PostsController::class, 'store'])->name('post.store');
+
+    Route::get('/posts/{slug}', [PostsController::class, 'show'])->name('post.show'); // http://127.0.0.1:8000/posts/my-first-post
+
 
 // # others
     // * gouping

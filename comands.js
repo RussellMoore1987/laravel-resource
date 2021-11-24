@@ -1,11 +1,19 @@
 // @ to build this project
-    // composer create-project laravel/laravel="8.4.*" laravel_test
-
-const { bindAll } = require("lodash");
+    // composer create-project laravel/laravel="8.4.*" laravel_resource
 
 // @ start up application (run/serve)
     // php artisan serve
     // http://localhost:8000/
+
+// @ Run Tests Laravel 
+    // php artisan test
+    // vendor/bin/phpunit // dose not work in work interment with out
+        // docker-compose exec practice-app bash
+
+    // To create a new test case, use the make:test Artisan command. By default, tests will be placed in the tests/Feature directory:
+        // php artisan make:test UserTest
+    // If you would like to create a test within the tests/Unit directory
+        // php artisan make:test UserTest --unit
 
 // @ list of routes
     // php artisan route:list
@@ -21,6 +29,21 @@ const { bindAll } = require("lodash");
 
 // @ run migration
     // php artisan migrate
+
+    // make 
+        // php artisan make:migration create_projects_table --create
+        // php artisan make:migration create_case_studies_table --create
+        // php artisan make:migration create_categories_table --create
+        // php artisan make:migration create_tags_table --create
+        // php artisan make:migration create_skills_table --create
+        // php artisan make:migration create_skill_types_table --create
+        // php artisan make:migration create_work_history_table --create
+        // php artisan make:migration create_work_history_type_table --create
+        // php artisan make:migration create_post_table --create
+        // php artisan make:migration create_experience_table --create
+        // php artisan make:migration create_content_table --create
+        // php artisan make:migration create_images_table --create
+        // php artisan make:migration create_connection_table --create
 
     // place holder
         // php artisan migrate:fresh
@@ -99,7 +122,7 @@ const { bindAll } = require("lodash");
     // => true
 
 // @ retrieving models
-    // App\Models\Project::find(51);
+    // # App\Models\Project::find(51);
         // php artisan tinker 
             // >>> App\Models\Project::find(51);
             // => App\Models\Project {#4376
@@ -134,6 +157,10 @@ const { bindAll } = require("lodash");
         // $Projects = App\Models\Project::where('completed_at', null)->orderBy('title')->take(3)->get();
         // $Projects = App\Models\Project::where('completed_at', null)->orderByDesc('title')->limit(3)->get();
 
+        // Aggregations
+        // $count = App\Models\Project::where('completed_at', null)->count();
+        // $max = App\Models\Project::where('completed_at', null)->max('updated_at');
+
         // TODO: try later format into existing architecture
             // ? https://laravel.com/docs/8.x/eloquent#advanced-subqueries
             // use App\Models\Destination;
@@ -152,7 +179,162 @@ const { bindAll } = require("lodash");
             //         ->limit(1)
             // )->get();
 
+    // # Inserting & Updating Models
+        // * Inserting
+            // $flight = new Flight;
+            // $flight->name = $request->name;
+            // $flight->save();
 
+            // $flight = Flight::create([
+            //     'name' => 'London to Paris',
+            // ]);
+
+        // * Updating
+            // $flight = Flight::find(1);
+            // $flight->name = 'Paris to London';
+            // $flight->save();
+
+            // mass update
+            // Flight::where('active', 1)
+            //     ->where('destination', 'San Diego')
+            //     ->update(['delayed' => 1]);
+            // ! Caveat with it
+            // ? https://laravel.com/docs/8.x/eloquent#mass-updates
+
+    // # deleting
+        // $flight = Flight::find(1);
+        // $flight->delete();
+
+        // Flight::destroy(1);
+        // Flight::destroy(1, 2, 3);
+        // Flight::destroy([1, 2, 3]);
+        // Flight::destroy(collect([1, 2, 3]));
+
+
+    // # other 
+        // $user = DB::table('users')->where('name', 'John')->first();
+        // $user->email;
+
+        // $titles = DB::table('users')->pluck('title');
+        // foreach ($titles as $title) {
+        //     echo $title;
+        // }
+
+        // if (DB::table('orders')->where('finalized', 1)->exists()) {
+        //     // ...
+        // }
+        // if (DB::table('orders')->where('finalized', 1)->doesntExist()) {
+        //     // ...
+        // }
+
+        // * The ability to build queries and then utilize them
+        // $query = DB::table('users')->select('name');
+        // $users = $query->addSelect('age')->get();
+
+        // $users = DB::table('users')
+        //     ->where('votes', '=', 100)
+        //     ->where('age', '>', 35)
+        //     ->get();
+
+        // $users = DB::table('users')
+        //     ->where('name', 'like', 'T%')
+        //     ->get();
+
+        // $users = DB::table('users')->where([
+        //     ['status', '=', '1'],
+        //     ['subscribed', '<>', '1'],
+        // ])->get();
+
+        // $users = DB::table('users')
+        //     ->where('votes', '>', 100)
+        //     ->orWhere('name', 'John')
+        //     ->get();
+
+        // If you need to group an "or" condition within parentheses, you may pass a closure as the first argument to the orWhere method:
+        // $users = DB::table('users')
+        //     ->where('votes', '>', 100)
+        //     ->orWhere(function($query) {
+        //         $query->where('name', 'Abigail')
+        //               ->where('votes', '>', 50);
+        //     })
+        // ->get();
+        // The example above will produce the following SQL:
+        // select * from users where votes > 100 or (name = 'Abigail' and votes > 50)
+
+        // $users = DB::table('users')
+        //    ->where('name', '=', 'John')
+        //    ->where(function ($query) {
+        //        $query->where('votes', '>', 100)
+        //              ->orWhere('title', '=', 'Admin');
+        //    })
+        //    ->get();
+        // select * from users where name = 'John' and (votes > 100 or title = 'Admin')
+
+        // json
+        // $users = DB::table('users')
+        //     ->where('preferences->dining->meal', 'salad')
+        //     ->get();
+
+        // whereBetween / orWhereBetween
+        // $users = DB::table('users')
+        //    ->whereBetween('votes', [1, 100])
+        //    ->get();
+
+        // whereNotBetween / orWhereNotBetween
+        // $users = DB::table('users')
+        //     ->whereNotBetween('votes', [1, 100])
+        //     ->get();
+
+        // whereIn / whereNotIn / orWhereIn / orWhereNotIn
+        // $users = DB::table('users')
+        //     ->whereIn('id', [1, 2, 3])
+        //     ->get();
+
+        // whereNull / whereNotNull / orWhereNull / orWhereNotNull
+        // $users = DB::table('users')
+        //     ->whereNull('updated_at')
+        //     ->get();
+
+        // whereDate / whereMonth / whereDay / whereYear / whereTime
+        // $users = DB::table('users')
+        //     ->whereDate('created_at', '2016-12-31')
+        //     ->get();
+        // $users = DB::table('users')
+        //     ->whereMonth('created_at', '12')
+        //     ->get();
+        // $users = DB::table('users')
+        //     ->whereDay('created_at', '31')
+        //     ->get();
+        // $users = DB::table('users')
+        //     ->whereYear('created_at', '2016')
+        //     ->get();
+        // $users = DB::table('users')
+        //     ->whereTime('created_at', '=', '11:20:45')
+        //     ->get();
+
+        // $users = DB::table('users')
+        //    ->whereExists(function ($query) {
+        //        $query->select(DB::raw(1))
+        //             ->from('orders')
+        //             ->whereColumn('orders.user_id', 'users.id');
+        //    })
+        //    ->get();
+        // select * from users
+        // where exists (
+        //     select 1
+        //     from orders
+        //     where orders.user_id = users.id
+        // )
+
+        // Auto-Incrementing IDs
+        // If the table has an auto-incrementing id, use the insertGetId method to insert a record and then retrieve the ID:
+        // $id = DB::table('users')->insertGetId(
+        //     ['email' => 'john@example.com', 'votes' => 0]
+        // );
+
+        // Debugging
+        // DB::table('users')->where('votes', '>', 100)->dd();
+        // DB::table('users')->where('votes', '>', 100)->dump();
 
 // @ retrieving models from collections
     // $Projects = Project::all();
@@ -169,3 +351,36 @@ const { bindAll } = require("lodash");
             // });
             // $Projects->count(); // 23
             // gives back completed_at = null
+
+// @ Laravel project, it's fresh start
+    // Run the docker-compose build command from the root directory
+    // Then run the docker-compose up command to bring the docker containers up
+    // Navigate to the application page by going to http://localhost:8000/
+    // You may bring up the terminal for the docker container to execute commands by using this command: docker-compose exec practice-app bash
+        // docker-compose exec practice-app bash
+        // php artisan
+    // composer install
+    // msql = docker-compose exec practice-mysql bash
+
+
+    // docker-compose build
+    // docker-compose up
+    // http://localhost:8000/
+
+    // docker-compose exec practice-app bash
+    // php artisan
+
+    // docker-compose exec practice-mysql bash
+
+    // php artisan migrate:fresh
+
+ // @ Problems
+    // TODO: get link and error message********
+    // Schema::defaultStringLength(191);
+
+    // Cannot declare class CreateWorkHistoryTypesTable, because the name is already in use laravel 2021
+        // ? https://stackoverflow.com/questions/54765710/error-migrations-cannot-declare-class-x-because-the-name-is-already-in-use/54765856
+   
+    // Something else connected to MySQL not allowing me to run the docker
+        // Solution
+            // Went to services and stopped wampmysql64
